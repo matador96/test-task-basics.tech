@@ -2,12 +2,32 @@ const UserService = require("../services/user");
 const AuthService = require("../services/auth");
 const bcrypt = require("bcrypt");
 const formidable = require("express-formidable");
+const { v4: uuidv4 } = require("uuid");
 
 const getPasswordHash = async (pass) => {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(pass, salt);
 
   return hash;
+};
+
+const downloadFile = (sendedFile) => {
+  const path = require("path");
+  const newpath = path.join(__dirname, "../../downloads/");
+
+  const file = sendedFile;
+  const filename = file.name;
+
+  const generatedName = uuidv4() + filename;
+
+  let isHaveSomeErrors = false;
+  file.mv(`${newpath}${generatedName}`, (err) => {
+    if (err) {
+      isHaveSomeErrors = true;
+    }
+  });
+
+  return isHaveSomeErrors ? false : `/downloads/${generatedName}`;
 };
 
 module.exports.getUsers = async (req, res) => {
@@ -31,6 +51,12 @@ module.exports.registerUser = async (req, res) => {
       throw Error("Пользователь с такой почтой уже существует");
     }
 
+    const userImage = downloadFile(req.files.file);
+
+    if (!userImage) {
+      throw Error("Doesnt downloaded");
+    }
+
     const passwordHash = await getPasswordHash(password);
     const newUser = {
       name,
@@ -38,6 +64,7 @@ module.exports.registerUser = async (req, res) => {
       password: passwordHash,
       gender,
       wasBorn,
+      image: userImage,
     };
 
     await UserService.add(newUser);

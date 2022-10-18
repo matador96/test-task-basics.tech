@@ -112,7 +112,7 @@ const ResponsiveAppBar = () => {
                   >
                     {account.name}
                   </Typography>{" "}
-                  <Avatar alt="Remy Sharp" />
+                  <Avatar alt={account.name} src={`/api/${account.image}`} />
                 </IconButton>
               </Tooltip>
               <Menu

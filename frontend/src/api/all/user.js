@@ -1,7 +1,7 @@
-import { get, post, put, headerForMultipleFields } from "./../fetch";
+import { get, post, put } from "./../fetch";
 
 export const registerAccount = (data) => {
-  return post("/account/register", data, headerForMultipleFields);
+  return post("/account/register", data);
 };
 
 export const loginAccount = (data) => {

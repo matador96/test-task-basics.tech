@@ -2,6 +2,8 @@ import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+
 import dayjs from "dayjs";
 
 const getAge = (date) => {
@@ -16,9 +18,10 @@ const getAge = (date) => {
   return years;
 };
 
-const UserCard = ({ name, email, gender, wasBorn }) => (
+const UserCard = ({ name, gender, wasBorn, image }) => (
   <Card>
     <CardContent>
+      <Avatar alt={name} src={`/api/${image}`} />
       <Typography component="div">
         Name: {name} ({gender})
       </Typography>

@@ -35,7 +35,7 @@ const AccountFields = () => {
 
   const onClick = () => {
     setIsDisabled(true);
-    updateAccount(data)
+    updateAccount(JSON.stringify(data))
       .then((res) => {
         dispatch(updateAction(res.json.data));
         toast.success("Successfully updated!");

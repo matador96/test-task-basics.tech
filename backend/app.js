@@ -5,12 +5,18 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   mongoose = require("mongoose");
 
+const fileUpload = require("express-fileupload");
+
+app.use("/api/downloads", express.static(__dirname + "/downloads"));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(
-  bodyParser.urlencoded({
-    extended: true,
+  fileUpload({
+    useTempFiles: true,
+    preserveExtension: true,
   })
 );
-app.use(bodyParser.json());
 
 routes(app);
 

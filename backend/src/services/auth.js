@@ -22,8 +22,8 @@ module.exports.login = async (email, password) => {
       throw Error("Пароль не верен");
     }
 
-    const { id, name } = findedUser;
-    let payload = { id, name, email };
+    const { id, name, image, wasBorn, gender } = findedUser;
+    let payload = { id, name, email, image, wasBorn, gender };
     let token = jwt.sign(payload, jwtOptions.secretOrKey);
 
     return { jwt: token, payload };

@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import toast from "react-hot-toast";
+import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { loginAccount, registerAccount } from "../api/all/user";
 import { useSelector } from "react-redux";
@@ -39,7 +40,7 @@ const LoginForm = () => {
   const onSubmit = () => {
     setIsDisabled(true);
 
-    loginAccount(data)
+    loginAccount(JSON.stringify(data))
       .then((res) => {
         if (res.json.data?.id) {
           res.json.data._id = res.json.data.id;
@@ -93,6 +94,7 @@ const LoginForm = () => {
 
 const initialValues = {
   gender: "male",
+  wasBorn: dayjs(),
 };
 
 const RegistrationForm = () => {
@@ -103,17 +105,18 @@ const RegistrationForm = () => {
   const onSubmit = () => {
     setIsDisabled(true);
 
-    // const formData = new FormData();
+    const formData = new FormData();
 
-    // const { name, email, gender, password, image, wasBorn } = data;
-    // formData.append("file", image);
-    // formData.append("name", name);
-    // formData.append("email", email);
-    // formData.append("gender", gender);
-    // formData.append("password", password);
-    // formData.append("wasBorn", wasBorn);
+    const { name, email, gender, password, image, wasBorn } = data;
 
-    registerAccount(data)
+    formData.append("file", image, image.name);
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("gender", gender);
+    formData.append("password", password);
+    formData.append("wasBorn", wasBorn);
+
+    registerAccount(formData)
       .then((res) => {
         if (res.json.data?.id) {
           res.json.data._id = res.json.data.id;
@@ -193,7 +196,7 @@ const RegistrationForm = () => {
             />
           </RadioGroup>
 
-          {/* <FormLabel id="demo-radio-buttons-group-label">Image</FormLabel>
+          <FormLabel id="demo-radio-buttons-group-label">Image</FormLabel>
 
           <IconButton
             color="primary"
@@ -208,7 +211,7 @@ const RegistrationForm = () => {
             />
             <PhotoCamera />
             {data?.image?.name}
-          </IconButton> */}
+          </IconButton>
 
           <Button disabled={isDisabled} variant="contained" onClick={onSubmit}>
             Sign up
