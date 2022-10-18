@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import PageTitle from "./../components/PageTitle";
 import { useSelector } from "react-redux";
-
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormControl from "@mui/material/FormControl";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 import toast from "react-hot-toast";
 import TextField from "@mui/material/TextField";
 import { updateAccount } from "../api/all/user";
@@ -19,6 +22,10 @@ const AccountFields = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [data, setData] = useState({});
   const acc = useSelector((state) => state.account);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   useEffect(() => {
     setData(acc);
@@ -54,12 +61,25 @@ const AccountFields = () => {
         />
         <TextField
           disabled={isDisabled}
-          label="Email"
+          label="Password"
           variant="outlined"
-          type="email"
           required
-          value={data.email}
-          onChange={(e) => onChangeField("email", e.target.value)}
+          type={showPassword ? "text" : "password"}
+          onChange={(e) => onChangeField("password", e.target.value)}
+          InputProps={{
+            // <-- This is where the toggle button is added.
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         <Button disabled={isDisabled} variant="contained" onClick={onClick}>

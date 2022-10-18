@@ -5,19 +5,29 @@ const ERROR_STATUS_AUTH = 401;
 const ERROR_STATUS_NOT_FOUNT = 404;
 const API_URL = "/api";
 
-const generateRequestSettings = (method, body) => {
+export const headerForMultipleFields = {
+  // "Content-Type": "multipart/form-data",
+};
+
+const generateRequestSettings = (method, body, headerSettings) => {
   const { token } = localStorage;
+  //const isFormData = !!Object.keys(headerSettings).length;
 
   const headers = {
     "Content-Type": "application/json",
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
+    ...headerSettings,
   };
 
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   let defaultSettings = { method, headers };
+
   if (body) {
     return {
       ...defaultSettings,
+      //  body: isFormData ? body : JSON.stringify(body),
       body: JSON.stringify(body),
     };
   }
@@ -34,16 +44,16 @@ const requestResult = (res, json) => ({
 export const put = async (destination, body) =>
   await doRequest("PUT", destination, body);
 
-export const post = async (destination, body) =>
-  await doRequest("POST", destination, body);
+export const post = async (destination, body, headerSettings) =>
+  await doRequest("POST", destination, body, headerSettings);
 
 export const get = async (destination) =>
   await doRequest("GET", destination, null);
 
-const doRequest = async (method, destination, body) => {
+const doRequest = async (method, destination, body, headerSettings = {}) => {
   const result = await fetch(
     `${API_URL}${destination}`,
-    generateRequestSettings(method, body)
+    generateRequestSettings(method, body, headerSettings)
   ).then((res) => {
     return res.json().then((json) => requestResult(res, json));
   });

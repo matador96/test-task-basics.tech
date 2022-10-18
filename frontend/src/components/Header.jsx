@@ -25,7 +25,7 @@ const ResponsiveAppBar = () => {
   const dispatch = useDispatch();
   const account = useSelector((state) => state.account);
 
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(false);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -68,7 +68,6 @@ const ResponsiveAppBar = () => {
             BASIC.TECH
           </Typography>
 
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap

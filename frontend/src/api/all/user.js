@@ -1,11 +1,11 @@
-import { get, post, put } from "./../fetch";
+import { get, post, put, headerForMultipleFields } from "./../fetch";
 
 export const registerAccount = (data) => {
-  return post("/account/register", { ...data });
+  return post("/account/register", data, headerForMultipleFields);
 };
 
 export const loginAccount = (data) => {
-  return post("/account/login", { ...data });
+  return post("/account/login", data);
 };
 
 export const logoutAccount = () => {
@@ -21,5 +21,5 @@ export const getAccount = () => {
 };
 
 export const updateAccount = (data) => {
-  return put(`/account`, { ...data });
+  return put(`/account`, data);
 };

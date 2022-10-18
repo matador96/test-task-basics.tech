@@ -1,6 +1,14 @@
 const UserService = require("../services/user");
 const AuthService = require("../services/auth");
 const bcrypt = require("bcrypt");
+const formidable = require("express-formidable");
+
+const getPasswordHash = async (pass) => {
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(pass, salt);
+
+  return hash;
+};
 
 module.exports.getUsers = async (req, res) => {
   try {
@@ -15,7 +23,7 @@ module.exports.getUsers = async (req, res) => {
 
 module.exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, gender, wasBorn } = req.body;
 
     const findUser = await UserService.find({ email });
 
@@ -23,17 +31,24 @@ module.exports.registerUser = async (req, res) => {
       throw Error("Пользователь с такой почтой уже существует");
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-
+    const passwordHash = await getPasswordHash(password);
     const newUser = {
       name,
       email,
-      password: hash,
+      password: passwordHash,
+      gender,
+      wasBorn,
     };
 
     await UserService.add(newUser);
-    return res.status(200).json({ status: 200 });
+
+    const result = await AuthService.login(newUser.email, password);
+
+    return res.status(200).json({
+      status: 200,
+      data: result.payload,
+      token: result.jwt,
+    });
   } catch (e) {
     return res.status(400).json({ status: 400, message: e.message });
   }
@@ -67,6 +82,7 @@ module.exports.logoutUser = (req, res) => {
 module.exports.getAccount = (req, res) => {
   try {
     const account = req.user.profile._doc;
+
     return res.status(200).json({ status: 200, data: account });
   } catch (e) {
     return res.status(400).json({ status: 400, message: e.message });
@@ -75,12 +91,22 @@ module.exports.getAccount = (req, res) => {
 
 module.exports.updateAccount = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, password } = req.body;
     const account = req.user.profile._doc;
 
-    await UserService.update(account._id, { name, email });
+    let updatedFields = {};
 
-    const findUser = await UserService.find({ email });
+    if (password) {
+      updatedFields.password = await getPasswordHash(password);
+    }
+
+    if (name) {
+      updatedFields.name = name;
+    }
+
+    await UserService.update(account._id, updatedFields);
+
+    const findUser = await UserService.find({ _id: account._id });
 
     return res.status(200).json({ status: 200, data: findUser });
   } catch (e) {
