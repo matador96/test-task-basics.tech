@@ -1,14 +1,7 @@
 const jwt = require("jsonwebtoken");
-const ExtractJwt = require("passport-jwt").ExtractJwt;
-
+const { jwtOptions } = require("./../middleware/authenticate");
 const bcrypt = require("bcrypt");
-
 const UserService = require("./user");
-
-const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: "asf4ASGiuh8xc735unjk",
-};
 
 module.exports.login = async (email, password) => {
   try {

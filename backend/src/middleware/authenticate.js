@@ -33,12 +33,13 @@ module.exports = {
   authenticate: (req, res, next) => checkPassportAuthenticate(req, res, next),
   authenticateWithoutReturn: (req, res, next) =>
     checkPassportAuthenticate(req, res, next, true),
+  jwtOptions,
 };
 
 passport.use(
   new JwtStrategy(jwtOptions, async (jwt_payload, next) => {
     const profile = await UserService.find({
-      id: jwt_payload.id,
+      _id: jwt_payload.id,
     });
 
     if (profile) {
