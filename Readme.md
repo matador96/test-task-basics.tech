@@ -2,7 +2,13 @@
 
 Cоздать веб-приложение с использованием ReactJs + Node.js (express.js) + MongoDB
 
-### Without validator on frontend&backend!
+### npm run install
+
+### npm run frontend
+
+### npm run backend (needs nodemon )
+
+## Without validator on frontend&backend!
 
       1. ✔ Главная страница (route /):
         1.1. ✔ Форма регистрации. Поля – имя, email, пароль, дата рождения, пол, фото профиля;
