@@ -1,7 +1,7 @@
 import { get, post, put } from "./../fetch";
 
 export const registerAccount = (data) => {
-  return post("/account/register", data);
+  return post("/account/register", data, true);
 };
 
 export const loginAccount = (data) => {
@@ -21,5 +21,5 @@ export const getAccount = () => {
 };
 
 export const updateAccount = (data) => {
-  return put(`/account`, data);
+  return put(`/account`, data, true);
 };

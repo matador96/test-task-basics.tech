@@ -12,15 +12,12 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
-import { useForm } from "react-hook-form";
 import { loginAccount, registerAccount } from "../api/all/user";
 import { useSelector } from "react-redux";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { loginAction } from "../store/actions/account";
 import { useDispatch } from "react-redux";
@@ -28,13 +25,6 @@ import { useDispatch } from "react-redux";
 const LoginForm = () => {
   const dispatch = useDispatch();
   const [isDisabled, setIsDisabled] = useState(false);
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   watch,
-  //   formState: { errors },
-  // } = useForm();
-
   const [data, setData] = useState({});
 
   const onSubmit = () => {
@@ -59,7 +49,6 @@ const LoginForm = () => {
   return (
     <FormControl>
       <Stack spacing={2}>
-        {/* <form onSubmit={handleSubmit(onSubmit)}> */}
         <TextField
           disabled={isDisabled}
           label="Email"
@@ -67,7 +56,6 @@ const LoginForm = () => {
           type="email"
           required
           onChange={(e) => onChangeField("email", e.target.value)}
-          // {...register("text", { required: true })}
         />
         <TextField
           disabled={isDisabled}
@@ -76,7 +64,6 @@ const LoginForm = () => {
           type="password"
           required
           onChange={(e) => onChangeField("password", e.target.value)}
-          // {...register("text", { required: true })}
         />
         <Button
           onClick={onSubmit}
@@ -86,7 +73,6 @@ const LoginForm = () => {
         >
           Login
         </Button>
-        {/* </form> */}
       </Stack>
     </FormControl>
   );

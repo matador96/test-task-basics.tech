@@ -1,0 +1,14 @@
+{
+  "name": "basic_tech_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "cd ./frontend && npm install && cd ../backend && npm install",
+    "frontend": "cd ./frontend && npm start",
+    "backend": "cd ./backend && nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import "./view/css/index.css";
 import reportWebVitals from "./reportWebVitals";
 import RouterLayout from "./routes/RouterLayout";
 import store from "./store/index";

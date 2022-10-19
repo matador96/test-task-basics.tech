@@ -7,7 +7,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 
 const People = () => {
-  const [data, setData] = useState("login");
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     getPeople().then((result) => setData(result.json.data));

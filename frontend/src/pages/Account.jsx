@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PageTitle from "./../components/PageTitle";
 import { useSelector } from "react-redux";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormControl from "@mui/material/FormControl";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
@@ -16,6 +14,8 @@ import TextField from "@mui/material/TextField";
 import { updateAccount } from "../api/all/user";
 import { useDispatch } from "react-redux";
 import { updateAction } from "../store/actions/account";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Avatar from "@mui/material/Avatar";
 
 const AccountFields = () => {
   const dispatch = useDispatch();
@@ -27,18 +27,29 @@ const AccountFields = () => {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
-  useEffect(() => {
-    setData(acc);
-  }, [acc]);
-
-  useEffect(() => {}, [data]);
-
   const onClick = () => {
     setIsDisabled(true);
-    updateAccount(JSON.stringify(data))
+    const { name, password, image } = data;
+
+    const formData = new FormData();
+    // not good :(
+    if (image) {
+      formData.append("file", image, image.name);
+    }
+
+    if (name) {
+      formData.append("name", name);
+    }
+
+    if (password) {
+      formData.append("password", password);
+    }
+
+    updateAccount(formData)
       .then((res) => {
         dispatch(updateAction(res.json.data));
         toast.success("Successfully updated!");
+        setData({});
       })
       .finally(() => setIsDisabled(false));
   };
@@ -46,6 +57,8 @@ const AccountFields = () => {
   const onChangeField = (name, value) => {
     setData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const modifiedData = { ...acc, ...data };
 
   return (
     <FormControl>
@@ -56,7 +69,7 @@ const AccountFields = () => {
           variant="outlined"
           type="name"
           required
-          value={data.name}
+          value={modifiedData.name}
           onChange={(e) => onChangeField("name", e.target.value)}
         />
         <TextField
@@ -82,8 +95,31 @@ const AccountFields = () => {
           }}
         />
 
+        {!data?.image && (
+          <Avatar
+            alt={modifiedData.name}
+            src={`/api/${modifiedData.image}`}
+            style={{ height: 100, width: 100 }}
+          />
+        )}
+
+        <IconButton
+          color="primary"
+          aria-label="upload picture"
+          component="label"
+        >
+          <input
+            hidden
+            accept="image/*"
+            type="file"
+            onChange={(e) => onChangeField("image", e.target.files[0])}
+          />
+          <PhotoCamera />
+          {data?.image && data?.image?.name}
+        </IconButton>
+
         <Button disabled={isDisabled} variant="contained" onClick={onClick}>
-          Save
+          Saves
         </Button>
       </Stack>
     </FormControl>

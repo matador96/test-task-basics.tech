@@ -1,8 +1,8 @@
 const UserService = require("../services/user");
 const AuthService = require("../services/auth");
 const bcrypt = require("bcrypt");
-const formidable = require("express-formidable");
 const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 
 const getPasswordHash = async (pass) => {
   const salt = await bcrypt.genSalt(10);
@@ -11,8 +11,17 @@ const getPasswordHash = async (pass) => {
   return hash;
 };
 
+const deleteFile = (imagePath) => {
+  if (!imagePath) {
+    return;
+  }
+  const fs = require("fs");
+  const filePath = path.join(__dirname, "../../" + imagePath);
+
+  fs.unlinkSync(filePath);
+};
+
 const downloadFile = (sendedFile) => {
-  const path = require("path");
   const newpath = path.join(__dirname, "../../downloads/");
 
   const file = sendedFile;
@@ -48,13 +57,13 @@ module.exports.registerUser = async (req, res) => {
     const findUser = await UserService.find({ email });
 
     if (findUser) {
-      throw Error("Пользователь с такой почтой уже существует");
+      throw Error("User exist with this email");
     }
 
     const userImage = downloadFile(req.files.file);
 
     if (!userImage) {
-      throw Error("Doesnt downloaded");
+      throw Error("Error on image download");
     }
 
     const passwordHash = await getPasswordHash(password);
@@ -122,6 +131,11 @@ module.exports.updateAccount = async (req, res) => {
     const account = req.user.profile._doc;
 
     let updatedFields = {};
+
+    if (req?.files?.file) {
+      deleteFile(account?.image);
+      updatedFields.image = downloadFile(req.files.file);
+    }
 
     if (password) {
       updatedFields.password = await getPasswordHash(password);
